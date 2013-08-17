@@ -26,15 +26,11 @@ int main(int argc, char **argv)
      
         opterr = 0;
     
-        while ((c = getopt (argc, argv, "abci:")) != -1)
-         switch (c)
-           {
+        while ((c = getopt (argc, argv, "i:")) != -1)
+         switch (c) {
            case 'i':
-             iflag = 1;
-             // printf("ivalue set to 1\n");
-             ivalue = optarg;
-             break;
-           case 'o':
+               iflag = 1;
+               ivalue = optarg;
              break;
            case '?':
              if (optopt == 'i')
@@ -48,21 +44,17 @@ int main(int argc, char **argv)
              return 1;
            default:
              abort ();
-           }
+         }
         
-        if(iflag==1 ) {
+        if(iflag==1) {
             kanji kjis[2200];
             int i=0;
-            printf("flag set with ivalue %s\n",ivalue);
-            
-                
                 // read all xml files
                DIR* dirFile = opendir(ivalue);
                if ( dirFile ) 
                {
-                   printf("opened dir\n");
                   struct dirent* hFile;
-                  int errno = 0;
+                  // int errno = 0;
                   while (( hFile = readdir( dirFile )) != NULL ) 
                   {
                      if ( !strcmp( hFile->d_name, "."  )) continue;
@@ -73,16 +65,15 @@ int main(int argc, char **argv)
 
                      // dirFile.name is the name of the file. Do whatever string comparison 
                      // you want here. Something like:
-                     printf("now at: %s\n", hFile->d_name);
+                     printf("now processing: %s\n", hFile->d_name);
                      if ( strstr( hFile->d_name, ".xml" )) {
-                         printf( "found an .xml file: %s", hFile->d_name );
                          kanji temp;
-                         char test[] = "test";
+                         // char test[] = "test";
                          char dir_file[80];
                          strcat(dir_file,ivalue);
                          strcat(dir_file,hFile->d_name);
                          printf("dirfile %s\n",dir_file);
-                         read_xml_file(dir_file,&temp,test);
+                         read_xml_file(dir_file,&temp);
                          print_kanji(temp);
                          kanji ex = extract_features(temp, INTERVAL);
                          kjis[i] = ex;
@@ -101,7 +92,7 @@ int main(int argc, char **argv)
                    kjis_out.arr[i] = kjis[i];
                }
                write_bin_file(kjis_out,out);
-               kanjis kjis_bin = read_bin_file("data.dat");
+               kanjis kjis_bin = read_bin_file((char*) "data.dat");
                for(int i=0;i<kjis_bin.count;i++) {
                    for(int j=0;j<kjis_bin.arr[i].c_strokes;j++) {
                        for(int k=0;k<kjis_bin.arr[i].c_points[j];k++) {
