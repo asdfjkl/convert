@@ -17,6 +17,7 @@
 // TODO: moment normalize before feature extraction
 int read_directory(kanji kjis[], char* directory) {
 
+    printf("directory string: %s\n",directory);
     int i = 0;
     DIR* dirFile = opendir(directory);
     if (dirFile) {
@@ -37,9 +38,10 @@ int read_directory(kanji kjis[], char* directory) {
                 char dir_file[80];
                 strcat(dir_file, directory);
                 strcat(dir_file, hFile->d_name);
-                // printf("dirfile %s\n", dir_file);
-                read_xml_file(dir_file, &temp);
+                printf("dirfile %s\n", dir_file);
+                read_xml_file("./xmls/3046.xml", &temp);
                 print_kanji(temp);
+                printf("\n");
                 kanji ex = extract_features(temp, INTERVAL);
                 kjis[i] = ex;
                 i++;
@@ -108,7 +110,7 @@ int main(int argc, char **argv)
              abort ();
          }
         
-        if(iflag==1 or iflag == 0) {
+        if(iflag==0) {
             char ivalue[] = "/Users/user/Documents/Code/convert/xmls/";
             kanji kjis[2300];
             int cnt = read_directory(kjis,ivalue);

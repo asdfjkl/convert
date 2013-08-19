@@ -18,14 +18,17 @@ int count_children(ezxml_t node, char name[])
 
 void read_xml_file(char filename[], kanji* k)
 {
-	ezxml_t xml_kanji = ezxml_parse_file(filename), xml_stroke, xml_point;
+	ezxml_t xml_kanji = ezxml_parse_file("4e88.xml"), xml_stroke, xml_point;
 	
+        printf("called read_xml_file \n");
+        
 	int strokes = count_children(xml_kanji, (char*) "stroke");
 	point **temp;
 	temp = (point**) malloc(strokes*sizeof(point*));
  	
 	int i=0;
 	(*k).c_strokes = strokes;
+        printf("strokes %i", strokes);
 	(*k).c_points = (int*) malloc(strokes*sizeof(int));
 	for (xml_stroke = ezxml_child(xml_kanji, "stroke"); xml_stroke; xml_stroke = xml_stroke->next) {
         int points = count_children(xml_stroke, (char*) "point");  
@@ -36,6 +39,7 @@ void read_xml_file(char filename[], kanji* k)
 			point p;
 			p.x =  atoi(ezxml_attr(xml_point,"x"));
 			p.y = atoi(ezxml_attr(xml_point,"y"));
+                        printf("pxy: %i, %i", p.x, p.y);
 			temp[i][j] = p;
     		j++; 
     	}
