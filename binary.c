@@ -37,7 +37,7 @@ kanjis read_bin_file(char filename[]) {
 		int m = 0;
 		kanji k;
 		fread(&m,sizeof(int),1,data);
-		printf("size: %i\n",m);
+		// printf("size: %i\n",m);
                 wchar_t c;
                 fread(&c,sizeof(wchar_t),1,data);
                 k.kji = c;

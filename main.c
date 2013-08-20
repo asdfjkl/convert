@@ -17,7 +17,7 @@
 // TODO: moment normalize before feature extraction
 int read_directory(kanji kjis[], char* directory) {
 
-    printf("directory string: %s\n",directory);
+    printf("Given input directory: %s\n\n",directory);
     int i = 0;
     DIR* dirFile = opendir(directory);
     if (dirFile) {
@@ -31,17 +31,15 @@ int read_directory(kanji kjis[], char* directory) {
 
             // dirFile.name is the name of the file. 
             // compare to check xml ending
-            printf("now processing: %s\n", hFile->d_name);
             if (strstr(hFile->d_name, ".xml")) {
                 kanji temp;
                 // char test[] = "test";
-                char dir_file[80];
-                strcat(dir_file, directory);
+                char dir_file[255];
+                strcpy(dir_file, directory);
+                strcat(dir_file, "/");
                 strcat(dir_file, hFile->d_name);
-                printf("dirfile %s\n", dir_file);
-                read_xml_file("./xmls/3046.xml", &temp);
-                print_kanji(temp);
-                printf("\n");
+                printf("now processing: %s\n", dir_file);
+                read_xml_file(dir_file, &temp);
                 kanji ex = extract_features(temp, INTERVAL);
                 kjis[i] = ex;
                 i++;
@@ -52,13 +50,17 @@ int read_directory(kanji kjis[], char* directory) {
     return i;
 }
 
-// verify two sets of kanjis
-// note: need to have same number of strokes 
+// a crude check to verify two sets of kanjis
+// note: no check if same number of strokes 
 // and points
 
 void verify_kanjis(kanjis kjis_a, kanji kjis_b[]) {
 
     for (int i = 0; i < kjis_a.count; i++) {
+        if(kjis_a.arr[i].kji != kjis_b[i].kji) {
+            printf("read-write error: not the same kanji\n");
+            exit(1);
+        }
         for (int j = 0; j < kjis_a.arr[i].c_strokes; j++) {
             for (int k = 0; k < kjis_a.arr[i].c_points[j]; k++) {
                 int x0 = kjis_a.arr[i].xy[j][k].x;
@@ -66,7 +68,7 @@ void verify_kanjis(kanjis kjis_a, kanji kjis_b[]) {
                 int x1 = kjis_b[i].xy[j][k].x;
                 int y1 = kjis_b[i].xy[j][k].y;
                 if ((x0 != x1) || (y0 != y1)) {
-                    printf("read-write error\n");
+                    printf("read-write error: not the same point\n");
                     exit(1);
                 }
             }
@@ -110,8 +112,8 @@ int main(int argc, char **argv)
              abort ();
          }
         
-        if(iflag==0) {
-            char ivalue[] = "/Users/user/Documents/Code/convert/xmls/";
+        if(iflag==1) {
+            // char ivalue[] = "/Users/user/Documents/Code/convert/xmls/";
             kanji kjis[2300];
             int cnt = read_directory(kjis,ivalue);
             
