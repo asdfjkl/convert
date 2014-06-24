@@ -40,6 +40,7 @@ int read_directory(kanji kjis[], char* directory) {
                 strcat(dir_file, hFile->d_name);
                 printf("now processing: %s\n", dir_file);
                 read_xml_file(dir_file, &temp);
+                moment(temp);
                 kanji ex = extract_features(temp, INTERVAL);
                 kjis[i] = ex;
                 i++;
