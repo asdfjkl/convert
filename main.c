@@ -10,11 +10,11 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <cstring>
+#include "rasterize.h"
 
 // read all xml files from a directory
 // extract features from kanji, and save to
 // first argument
-// TODO: moment normalize before feature extraction
 int read_directory(kanji kjis[], char* directory) {
 
     printf("Given input directory: %s\n\n",directory);
@@ -40,8 +40,15 @@ int read_directory(kanji kjis[], char* directory) {
                 strcat(dir_file, hFile->d_name);
                 printf("now processing: %s\n", dir_file);
                 read_xml_file(dir_file, &temp);
-                moment(temp);
-                kanji ex = extract_features(temp, INTERVAL);
+                // first raster to get intermediate
+                // points and increase resolution
+                // then moment normalize, and then
+                // raster again to get intermediate points
+                // lost due to normalization
+                kanji temp_r = raster(temp);
+                moment(temp_r);
+                kanji temp_rmr = raster(temp_r);
+                kanji ex = extract_features(temp_rmr, INTERVAL);
                 kjis[i] = ex;
                 i++;
             }
