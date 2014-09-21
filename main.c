@@ -45,11 +45,16 @@ int read_directory(kanji kjis[], char* directory) {
                 // then moment normalize, and then
                 // raster again to get intermediate points
                 // lost due to normalization
+		printf("read file\n");
                 kanji temp_r = raster(temp);
+		printf("rastered kanji\n");
                 moment(temp_r);
+		printf("applied moment normalization\n");
                 kanji temp_rmr = raster(temp_r);
+		printf("rastered again\n");
                 kanji ex = extract_features(temp_rmr, INTERVAL);
-                kjis[i] = ex;
+                printf("extracted features\n");
+		kjis[i] = ex;
                 i++;
             }
         }
@@ -135,9 +140,9 @@ int main(int argc, char **argv)
             for(int i=0;i<cnt;i++) {
                 kjis_out.arr[i] = kjis[i];
             }
-            
+            printf("starting to write...\n");
             write_bin_file(kjis_out,out);
-            
+            printf("everything written out...\n");
             // read them back in for verification
             // 
             kanjis kjis_bin = read_bin_file((char*) "data.dat");
